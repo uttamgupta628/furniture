@@ -174,7 +174,7 @@ export const HowItWorks: React.FC = () => {
 
                 {/* Learn more button that appears on hover */}
                 <div className="opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 mt-4">
-                  <button className={`w-full bg-gradient-to-r ${step.color} text-white py-2 rounded-full text-sm font-medium shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden`}>
+                  <button className={`w-full bg-gradient-to-r ${step.color} text-white py-2 rounded-md text-sm font-medium shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden`}>
                     <span className="relative z-10">Learn More →</span>
                     <div className="absolute inset-0 bg-white/20 transform -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
                   </button>

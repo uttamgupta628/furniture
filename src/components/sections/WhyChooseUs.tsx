@@ -225,7 +225,7 @@ export const WhyChooseUs: React.FC = () => {
             </div>
 
             {/* CTA button with enhanced effects */}
-            <button className={`relative px-8 py-3 bg-gradient-to-r from-[#7A6854] to-[#6B5945] text-white rounded-full font-medium transition-all duration-300 hover:shadow-2xl hover:scale-105 overflow-hidden group ${
+            <button className={`relative px-8 py-3 bg-gradient-to-r from-[#7A6854] to-[#6B5945] text-white rounded-md font-medium transition-all duration-300 hover:shadow-2xl hover:scale-105 overflow-hidden group ${
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
             }`}
             style={{ transitionDelay: '900ms' }}>

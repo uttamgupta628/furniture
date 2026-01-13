@@ -132,7 +132,7 @@ export const PropertyCard: React.FC<PropertyCardProps> = ({ property, index, isV
         <div className="w-0 h-0.5 bg-gradient-to-r from-[#C9A86A] to-transparent group-hover:w-full transition-all duration-500 mb-4"></div>
 
         {/* View Details button with multiple animations */}
-        <button className="w-full bg-gradient-to-r from-white/80 to-white/90 text-[#7A6854] py-3 rounded-full font-bold text-sm opacity-0 group-hover:opacity-100 transform translate-y-4 scale-95 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-500 hover:from-white hover:to-white hover:shadow-xl relative overflow-hidden group/btn">
+        <button className="w-full bg-gradient-to-r from-white/80 to-white/90 text-[#7A6854] py-3 rounded-md font-bold text-sm opacity-0 group-hover:opacity-100 transform translate-y-4 scale-95 group-hover:translate-y-0 group-hover:scale-100 transition-all duration-500 hover:from-white hover:to-white hover:shadow-xl relative overflow-hidden group/btn">
           <span className="relative z-10 group-hover/btn:tracking-wider transition-all duration-300">View Details →</span>
           <div className="absolute inset-0 bg-gradient-to-r from-[#C9A86A]/20 to-transparent transform -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700"></div>
         </button>
@@ -251,7 +251,7 @@ export const FeaturedProperties: React.FC<FeaturedPropertiesProps> = ({ properti
         <div className={`flex justify-end mb-8 transition-all duration-700 delay-300 ${
           isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-10'
         }`}>
-          <button className="bg-[#7A6854] text-white px-8 py-3 rounded-lg hover:bg-[#6B5945] transition-all duration-300 hover:scale-105 hover:shadow-2xl text-sm font-medium group relative overflow-hidden">
+          <button className="bg-[#7A6854] text-white px-8 py-3 rounded-md hover:bg-[#6B5945] transition-all duration-300 hover:scale-105 hover:shadow-2xl text-sm font-medium group relative overflow-hidden">
             <span className="relative z-10">View more</span>
             <div className="absolute inset-0 bg-gradient-to-r from-[#6B5945] to-[#5A4A3A] transform -translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
             <span className="relative z-10 inline-block ml-2 group-hover:translate-x-2 transition-transform duration-300">→</span>
