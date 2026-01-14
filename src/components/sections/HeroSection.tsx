@@ -117,7 +117,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ images }) => {
             <button
               className="bg-white text-gray-900 px-12 py-3 rounded-md 
                          font-medium shadow-md
-                         hover:shadow-lg hover:scale-105 transition-all duration-300 hover:bg-[#7A6854] hover:text-white"
+                         hover:shadow-lg transition-all duration-300 hover:scale-105 relative overflow-hidden group hover:bg-[#7A6854] hover:text-white"
             >
               Join Us
             </button>
