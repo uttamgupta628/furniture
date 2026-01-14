@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, Eye, EyeOff, User, ArrowRight, Home, Sparkles, Check } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, ArrowRight, Home, Sparkles, Check, Phone } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 export const LoginPage: React.FC = () => {
@@ -10,6 +9,7 @@ export const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
   const [isLoaded, setIsLoaded] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,19 +28,57 @@ export const LoginPage: React.FC = () => {
       return;
     }
 
-    if (!isLogin && !name) {
-      setError('Please enter your name');
+    if (!isLogin && (!name || !phone)) {
+      setError('Please fill in all required fields');
       return;
+    }
+
+    // Validate phone number (basic validation)
+    if (!isLogin && phone) {
+      const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/;
+      if (!phoneRegex.test(phone)) {
+        setError('Please enter a valid phone number');
+        return;
+      }
     }
 
     setError('');
     setIsSubmitting(true);
 
     try {
-      await login(email, password, name);
+      const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+      const apiUrl = 'https://realstateasr1.onrender.com'; 
+
+      const response = await fetch(`${apiUrl}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(
+          isLogin 
+            ? { email, password }
+            : { name, email, phone, password }
+        ),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Authentication failed');
+      }
+
+      // Store token in localStorage
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      // Call login from AuthContext if needed
+      if (login) {
+        await login(email, password);
+      }
+      
       navigate('/home');
-    } catch (err) {
-      setError('Login failed. Please try again.');
+    } catch (err: any) {
+      setError(err.message || 'Authentication failed. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -145,7 +183,7 @@ export const LoginPage: React.FC = () => {
         </div>
 
         {/* Right Side - Form */}
-        <div className="p-12 flex flex-col justify-center relative bg-gradient-to-br from-white to-gray-50">
+        <div className="p-12 flex flex-col justify-center relative bg-gradient-to-br from-white to-gray-50 overflow-y-auto max-h-screen">
           <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#C9A86A]/20 to-transparent rounded-bl-full"></div>
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-tr from-[#D4C5B3]/20 to-transparent rounded-tr-full"></div>
 
@@ -203,40 +241,75 @@ export const LoginPage: React.FC = () => {
             )}
 
             {/* Form Fields */}
-            <div className="space-y-5" onKeyPress={handleKeyPress}>
+            <div className="space-y-2" onKeyPress={handleKeyPress}>
               {!isLogin && (
-                <div className={`transition-all duration-500 ${
-                  isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
-                }`} style={{ transitionDelay: '300ms' }}>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Full Name
-                  </label>
-                  <div className={`relative group transition-all duration-300 ${
-                    focusedField === 'name' ? 'scale-[1.02]' : ''
-                  }`}>
-                    <div className={`absolute inset-0 bg-gradient-to-r from-[#C9A86A] to-[#D4C5B3] rounded-xl opacity-0 blur transition-opacity duration-300 ${
-                      focusedField === 'name' ? 'opacity-20' : 'group-hover:opacity-10'
-                    }`}></div>
-                    <div className={`relative flex items-center bg-white border-2 rounded-xl transition-all duration-300 ${
-                      focusedField === 'name' 
-                        ? 'border-[#C9A86A] shadow-lg' 
-                        : 'border-gray-200 hover:border-gray-300'
+                <>
+                  <div className={`transition-all duration-500 ${
+                    isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+                  }`} style={{ transitionDelay: '300ms' }}>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Full Name
+                    </label>
+                    <div className={`relative group transition-all duration-300 ${
+                      focusedField === 'name' ? 'scale-[1.02]' : ''
                     }`}>
-                      <User className={`ml-4 w-5 h-5 transition-colors duration-300 ${
-                        focusedField === 'name' ? 'text-[#C9A86A]' : 'text-gray-400'
-                      }`} />
-                      <input
-                        type="text"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        onFocus={() => setFocusedField('name')}
-                        onBlur={() => setFocusedField(null)}
-                        placeholder="John Doe"
-                        className="w-full px-4 py-3 bg-transparent outline-none text-gray-900"
-                      />
+                      <div className={`absolute inset-0 bg-gradient-to-r from-[#C9A86A] to-[#D4C5B3] rounded-xl opacity-0 blur transition-opacity duration-300 ${
+                        focusedField === 'name' ? 'opacity-20' : 'group-hover:opacity-10'
+                      }`}></div>
+                      <div className={`relative flex items-center bg-white border-2 rounded-xl transition-all duration-300 ${
+                        focusedField === 'name' 
+                          ? 'border-[#C9A86A] shadow-lg' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}>
+                        <User className={`ml-4 w-5 h-5 transition-colors duration-300 ${
+                          focusedField === 'name' ? 'text-[#C9A86A]' : 'text-gray-400'
+                        }`} />
+                        <input
+                          type="text"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          onFocus={() => setFocusedField('name')}
+                          onBlur={() => setFocusedField(null)}
+                          placeholder="John Doe"
+                          className="w-full px-4 py-3 bg-transparent outline-none text-gray-900"
+                        />
+                      </div>
                     </div>
                   </div>
-                </div>
+
+                  <div className={`transition-all duration-500 ${
+                    isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'
+                  }`} style={{ transitionDelay: '350ms' }}>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <div className={`relative group transition-all duration-300 ${
+                      focusedField === 'phone' ? 'scale-[1.02]' : ''
+                    }`}>
+                      <div className={`absolute inset-0 bg-gradient-to-r from-[#C9A86A] to-[#D4C5B3] rounded-xl opacity-0 blur transition-opacity duration-300 ${
+                        focusedField === 'phone' ? 'opacity-20' : 'group-hover:opacity-10'
+                      }`}></div>
+                      <div className={`relative flex items-center bg-white border-2 rounded-xl transition-all duration-300 ${
+                        focusedField === 'phone' 
+                          ? 'border-[#C9A86A] shadow-lg' 
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}>
+                        <Phone className={`ml-4 w-5 h-5 transition-colors duration-300 ${
+                          focusedField === 'phone' ? 'text-[#C9A86A]' : 'text-gray-400'
+                        }`} />
+                        <input
+                          type="tel"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          onFocus={() => setFocusedField('phone')}
+                          onBlur={() => setFocusedField(null)}
+                          placeholder="+1 (555) 000-0000"
+                          className="w-full px-4 py-3 bg-transparent outline-none text-gray-900"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </>
               )}
 
               <div className={`transition-all duration-500 ${
